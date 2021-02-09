@@ -26,9 +26,12 @@ var goldClass = types.BucketClass{
 	ObjectMeta: metav1.ObjectMeta{
 		Name: "classgold",
 	},
-	AllowedNamespaces:    []string{"default", "cosins"},
-	Parameters:           classGoldParameters,
-	Protocol:             "s3",
+	AllowedNamespaces: []string{"default", "cosins"},
+	Parameters:        classGoldParameters,
+	Protocol: types.Protocol{
+		Name:    "s3",
+		Version: "",
+	},
 	IsDefaultBucketClass: false,
 }
 
@@ -43,11 +46,7 @@ var bucketRequest1 = types.BucketRequest{
 		UID:       "12345-67890",
 	},
 	Spec: types.BucketRequestSpec{
-		BucketPrefix: "cosi",
-		Protocol: types.RequestedProtocol{
-			Name:    "s3",
-			Version: "",
-		},
+		BucketPrefix:    "cosi",
 		BucketClassName: "classgold",
 	},
 }
@@ -63,11 +62,7 @@ var bucketRequest2 = types.BucketRequest{
 		UID:       "abcde-fghijk",
 	},
 	Spec: types.BucketRequestSpec{
-		BucketPrefix: "cosi",
-		Protocol: types.RequestedProtocol{
-			Name:    "s3",
-			Version: "",
-		},
+		BucketPrefix:    "cosi",
 		BucketClassName: "classgold",
 	},
 }

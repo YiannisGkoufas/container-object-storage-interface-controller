@@ -119,7 +119,7 @@ func (b *bucketRequestListener) provisionBucketRequestOperation(ctx context.Cont
 	bucket.Spec.Parameters = util.CopySS(bucketClass.Parameters)
 
 	// TODO have a switch statement to populate appropriate protocol based on BR.Protocol
-	bucket.Spec.Protocol.RequestedProtocol = bucketRequest.Spec.Protocol
+	bucket.Spec.Protocol = bucketClass.Protocol
 
 	bucket, err = b.bucketClient.ObjectstorageV1alpha1().Buckets().Create(context.Background(), bucket, metav1.CreateOptions{})
 	if err != nil {
