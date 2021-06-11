@@ -3,16 +3,16 @@ package main
 import (
 	"context"
 	"flag"
-	"os"
-	"os/signal"
-	"syscall"
-
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-
+	"net/http"
+	"os"
+	"os/signal"
 	bucketcontroller "sigs.k8s.io/container-object-storage-interface-api/controller"
 	"sigs.k8s.io/container-object-storage-interface-controller/pkg/bucketaccessrequest"
 	"sigs.k8s.io/container-object-storage-interface-controller/pkg/bucketrequest"
+	"syscall"
 
 	"k8s.io/klog/v2"
 )
@@ -55,6 +55,11 @@ func main() {
 	go func() {
 		<-sigs
 		cancel()
+	}()
+
+	go func() {
+		http.Handle("/metrics", promhttp.Handler())
+		http.ListenAndServe(":2112", nil)
 	}()
 
 	if err := cmd.ExecuteContext(ctx); err != nil {

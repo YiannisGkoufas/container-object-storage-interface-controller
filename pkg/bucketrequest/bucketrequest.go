@@ -2,6 +2,8 @@ package bucketrequest
 
 import (
 	"context"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -19,6 +21,13 @@ import (
 
 const (
 	finalizer = "cosi.objectstorage.k8s.io/bucketrequest-protection"
+)
+
+var (
+	bucketRequestsCounter = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "cosi_bucketrequests_total",
+		Help: "The total number of bucket requests",
+	})
 )
 
 // bucketRequestListener is a resource handler for bucket requests objects
@@ -39,6 +48,7 @@ func (b *bucketRequestListener) Add(ctx context.Context, bucketRequest *v1alpha1
 		"bucketClass", bucketRequest.Spec.BucketClassName,
 		"bucketPrefix", bucketRequest.Spec.BucketPrefix,
 	)
+	bucketRequestsCounter.Inc()
 
 	err := b.provisionBucketRequestOperation(ctx, bucketRequest)
 	if err != nil {

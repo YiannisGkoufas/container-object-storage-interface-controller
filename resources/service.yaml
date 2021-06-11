@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: prom-demo
+  name: prom-demo
+spec:
+  ports:
+    - name: prom-port
+      port: 2112
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: container-object-storage-interface-controller
+  type: ClusterIP

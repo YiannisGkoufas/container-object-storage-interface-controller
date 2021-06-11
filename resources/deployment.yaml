@@ -31,7 +31,10 @@ spec:
       serviceAccountName: objectstorage-controller-sa
       containers:
         - name: objectstorage-controller
-          image: quay.io/containerobjectstorage/objectstorage-controller:canary
+          image: quay.io/yiannisgkoufas/controller-manager
           imagePullPolicy: Always
+          ports:
+            - name: prom
+              containerPort: 2112
           args:
           - "--v=5"

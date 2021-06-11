@@ -2,6 +2,8 @@ package bucketaccessrequest
 
 import (
 	"context"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -19,6 +21,13 @@ import (
 
 const (
 	finalizer = "cosi.objectstorage.k8s.io/bucketaccessrequest-protection"
+)
+
+var (
+	bucketAccessRequestsCounter = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "cosi_bucketaccessrequests_total",
+		Help: "The total number of bucket access requests",
+	})
 )
 
 type bucketAccessRequestListener struct {
@@ -41,6 +50,7 @@ func (b *bucketAccessRequestListener) InitializeBucketClient(bc bucketclientset.
 func (b *bucketAccessRequestListener) Add(ctx context.Context, obj *v1alpha1.BucketAccessRequest) error {
 	klog.V(1).Infof("Add called for BucketAccessRequest %s", obj.Name)
 	bucketAccessRequest := obj
+	bucketAccessRequestsCounter.Inc()
 
 	err := b.provisionBucketAccess(ctx, bucketAccessRequest)
 	if err != nil {
